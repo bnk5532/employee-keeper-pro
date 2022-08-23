@@ -36,6 +36,9 @@ inquirer.prompt([
         message: "View All Departments",
         choices: `${department}`
     },
+]);
+
+
     //Adds
 (function addDepartment() {
         inquirer.prompt([
