@@ -2,7 +2,7 @@ const inquirer = require("inquirer");
 const db = require("./db/connection");
 require("console.table");
 
-// function startView(){}
+function startView(){}
 inquirer
   .prompt([
     {
@@ -10,7 +10,7 @@ inquirer
       message: "What would you like to do?",
       name: "start",
       choices: [
-        { value: "viewEmployee", name: "View Employee" },
+        { value: "viewEmployee", name: "View All Employees" },
         { value: "viewDepartments", name: "View All Departments" },
         { value: "viewRoles", name: "View All Roles" },
         { value: "addEmployee", name: "Add Employee"},
@@ -48,7 +48,6 @@ inquirer
         reset();
         break;
     }
-    console.log(res);
   });
 
 function viewEmployee() {
@@ -75,7 +74,24 @@ function viewRoles() {
   });
 }
 
-function addEmployee(){}
+function addEmployee(){
+    inquirer.prompt([
+        {name: "first", type: "input", message: "New employee's first name?"},
+        {name: "last", type: "input", message: "New employee's last name?"},
+        {name: "title", type: "input", message: "New employee's title?"},
+        {name: "salary", type: "input", message: "New employee's salary?"},
+        {
+            name: "manager", 
+            type: "list", 
+            message: "New employee's manager?",
+            choices: [
+               // list of all employees {        }
+        ]}
+    ])
+}
+
+
+
 function updateEmployee(){}
 function addDepartment(){}
 function addRole(){}
