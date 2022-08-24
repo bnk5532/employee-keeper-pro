@@ -1,30 +1,13 @@
 const inquirer = require("inquirer");
 const db = require("./db/connection");
 require("console.table");
+const homeQuestions = require('./questions/homeQuestions')
 
-function startView(){}
-inquirer
-  .prompt([
-    {
-      type: "list",
-      message: "What would you like to do?",
-      name: "start",
-      choices: [
-        { value: "viewEmployee", name: "View All Employees" },
-        { value: "viewDepartments", name: "View All Departments" },
-        { value: "viewRoles", name: "View All Roles" },
-        { value: "addEmployee", name: "Add Employee"},
-        { value: "updateEmployee", name: "Update Employee Role"},
-        { value: "addDepartment", name: "Add Department"},
-        { value: "addRole", name: "Add Role"},
-        { value: "reset", name: "Quit" },
-      ],
-    },
-  ])
-  .then((res) => {
-    switch (res.start) {
+async function startView(questions){
+    res = await inquirer.prompt(questions)
+    switch (res.action) {
       case "viewEmployee":
-        viewEmployee();
+        return viewEmployee();
         break;
       case "viewDepartments":
         viewDepartments();
@@ -44,11 +27,11 @@ inquirer
       case "addRole":
         addRole();
         break;
-      case "reset":
-        reset();
-        break;
+      default:
+        return "Thank You"
     }
-  });
+};
+
 
 function viewEmployee() {
   db.query(
@@ -56,6 +39,7 @@ function viewEmployee() {
     (err, data) => {
       if (err) console.log(err);
       console.table(data);
+      startView(homeQuestions)
     }
   );
 }
@@ -64,6 +48,7 @@ function viewDepartments() {
   db.query("SELECT * FROM department", (err, data) => {
     if (err) console.log(err);
     console.table(data);
+    startView(homeQuestions)
   });
 }
 
@@ -71,33 +56,113 @@ function viewRoles() {
   db.query("SELECT * FROM role", (err, data) => {
     if (err) console.log(err);
     console.table(data);
+    startView(homeQuestions)
   });
 }
 
-function addEmployee(){
+
+
+
+
+
+async function addEmployee(){
+    // db.promise().query(("SELECT id, first_name, last_name FROM employee"), (err,data) => {
+    //     err ?console.log(err)
+    //         :console.log(data)
+    // }).then(data => {
+        var data = db.query("SELECT id, first_name, last_name FROM employee", (err, data) => 
+        {if (err) console.log(err);
+            console.table(data);
+    });
+
+        inquirer.prompt([
+            {name: "first", type: "input", message: "New employee's first name?"},
+            {name: "last", type: "input", message: "New employee's last name?"},
+            {name: "title", type: "input", message: "New employee's title?"},
+            {name: "salary", type: "input", message: "New employee's salary?"},
+            {name: "manager", type: "list", message: "New employee's manager?", choices: data},       
+        
+        ]).then(answers => console.log(answers))
+
+        // startView(homeQuestions)
+    }
+
+// function updateEmployee(){}
+
+
+function addDepartment(){
     inquirer.prompt([
-        {name: "first", type: "input", message: "New employee's first name?"},
-        {name: "last", type: "input", message: "New employee's last name?"},
-        {name: "title", type: "input", message: "New employee's title?"},
-        {name: "salary", type: "input", message: "New employee's salary?"},
         {
-            name: "manager", 
-            type: "list", 
-            message: "New employee's manager?",
-            choices: [
-               // list of all employees {        }
-        ]}
-    ])
-}
+            name: "newDept", 
+            type: "input", 
+            message: "New Department name?"
+        },
+    ]) 
+    .then(function(answers){
+        db.query("INSERT INTO department SET ?",
+            {
+                name: answers.newDept
+            },
+            function(err) {
+                if (err) throw err;
+                console.log("\nYou successfully added the new department!\n");
+                startView(homeQuestions)
+            })
+    });
+};    
+
+function addRole(){
+    inquirer.prompt([
+        {
+            name: "newTitle", 
+            type: "input", 
+            message: "New Title?"
+        },
+        {
+            name: "newSalary", 
+            type: "number", 
+            message: "New Salary?"
+        },
+        {
+            name: "newDeptId", 
+            type: "number", 
+            message: "New Department ID?"
+        },
+    ]) 
+    .then(function(answers){
+        db.query("INSERT INTO role SET ?",
+            {
+                title: answers.newTitle,
+                salary: answers.newSalary,
+                department_id: answers.newDeptId
+            },
+            function(err) {
+                if (err) throw err;
+                console.log("\nYou successfully added the new a role!\n");
+                startView(homeQuestions)
+            })
+    });
+};    
+
+startView(homeQuestions)
 
 
 
-function updateEmployee(){}
-function addDepartment(){}
-function addRole(){}
+// const connection = require("./connection");
 
+// class DB {
+//     // Keeping a reference to the connection on the class in case we need it later
+//     constructor(connection) {
+//       this.connection = connection;
+//     }
+  
+//     // Find all employees, join with roles and departments to display their roles, salaries, departments, and managers
+//     findAllEmployees() {
+//       return this.connection.promise().query(
+//         "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id;"
+//       );
+//     }
 
-function reset() {
-  startView();
-}
+//     module.exports = new DB(connection);
 
+//     const db = require("./db");
