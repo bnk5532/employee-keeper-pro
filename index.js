@@ -86,7 +86,7 @@ async function addEmployee(){
                 },
                 function(err) {
                     if (err) throw err;
-                    console.log("\nYou successfully added the new employee!\n");
+                    console.log(`\nYou successfully added ${answers.first + " " +  answers.last} to the database!\n`);
                     startView(homeQuestions)
                 })
         });
@@ -110,7 +110,7 @@ function addDepartment(){
             },
             function(err) {
                 if (err) throw err;
-                console.log("\nYou successfully added the new department!\n");
+                console.log(`\nYou successfully added ${answers.newDept} to the database!\n`);
                 startView(homeQuestions)
             })
     });
@@ -143,7 +143,7 @@ function addRole(){
             },
             function(err) {
                 if (err) throw err;
-                console.log("\nYou successfully added the new a role!\n");
+                console.log(`\nYou successfully added ${answers.newTitle} to the database!\n`);
                 startView(homeQuestions)
             })
     });
