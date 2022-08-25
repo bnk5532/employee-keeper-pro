@@ -35,7 +35,7 @@ async function startView(questions){
 
 function viewEmployee() {
   db.query(
-    "SELECT * FROM employee LEFT JOIN role on employee.role_id=role.id LEFT JOIN department on role.department_id=department.id",
+    "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, manager_id AS manager FROM employee LEFT JOIN role on employee.role_id=role.id LEFT JOIN department on role.department_id=department.id",
     (err, data) => {
       if (err) console.log(err);
       console.table(data);
