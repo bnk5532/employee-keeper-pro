@@ -53,7 +53,7 @@ function viewDepartments() {
 }
 
 function viewRoles() {
-  db.query("SELECT * FROM role", (err, data) => {
+  db.query("SELECT role.id, role.title, department.name AS department_name, role.salary FROM role LEFT JOIN department on role.department_id=department.id", (err, data) => {
     if (err) console.log(err);
     console.table(data);
     startView(homeQuestions)
@@ -70,22 +70,32 @@ async function addEmployee(){
     //     err ?console.log(err)
     //         :console.log(data)
     // }).then(data => {
-        var data = db.query("SELECT id, first_name, last_name FROM employee", (err, data) => 
-        {if (err) console.log(err);
-            console.table(data);
-    });
+    //     var data = db.query("SELECT id, first_name, last_name FROM employee", (err, data) => 
+    //     {if (err) console.log(err);
+    //         console.table(data);
+    // });
 
         inquirer.prompt([
             {name: "first", type: "input", message: "New employee's first name?"},
             {name: "last", type: "input", message: "New employee's last name?"},
-            {name: "title", type: "input", message: "New employee's title?"},
-            {name: "salary", type: "input", message: "New employee's salary?"},
-            {name: "manager", type: "list", message: "New employee's manager?", choices: data},       
+            {name: "role", type: "input", message: "New employee's role ID?"},
+            {name: "managerID", type: "input", message: "New employee's manager ID?"},     
         
-        ]).then(answers => console.log(answers))
-
-        // startView(homeQuestions)
-    }
+        ]).then(function(answers){
+            db.query("INSERT INTO employee SET ?",
+                {
+                    first_name: answers.first,
+                    last_name: answers.last,
+                    role_id: answers.role,
+                    manager_id: answers.managerID,
+                },
+                function(err) {
+                    if (err) throw err;
+                    console.log("\nYou successfully added the new employee!\n");
+                    startView(homeQuestions)
+                })
+        });
+    };    
 
 // function updateEmployee(){}
 
