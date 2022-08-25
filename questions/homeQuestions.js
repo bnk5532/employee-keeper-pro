@@ -10,7 +10,7 @@ const homeQuestions = [{
       { value: "updateEmployee", name: "Update Employee Role"},
       { value: "addDepartment", name: "Add Department"},
       { value: "addRole", name: "Add Role"},
-      { value: "reset", name: "Quit" }
+      { value: "default", name: "Quit" }
     ]
   }]
 

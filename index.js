@@ -7,7 +7,7 @@ async function startView(questions){
     res = await inquirer.prompt(questions)
     switch (res.action) {
       case "viewEmployee":
-        return viewEmployee();
+        viewEmployee();
         break;
       case "viewDepartments":
         viewDepartments();
@@ -27,8 +27,8 @@ async function startView(questions){
       case "addRole":
         addRole();
         break;
-      default:
-        return "Thank You"
+      default: "default"
+        return console.log("Thank You!")
     }
 };
 
