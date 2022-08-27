@@ -3,6 +3,7 @@ const db = require("./db/connection");
 require("console.table");
 const homeQuestions = require("./questions/homeQuestions");
 
+//switch cases with function calls for start questions(homeQuestions.js) 
 async function startView(questions) {
   res = await inquirer.prompt(questions);
   switch (res.action) {
@@ -35,7 +36,7 @@ async function startView(questions) {
       return console.log("\nThank You!\n");
   }
 }
-
+//functions for all of the above calls that correspond to user selections.
 function viewEmployee() {
   db.query(
     "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN role on employee.role_id=role.id LEFT JOIN department on role.department_id=department.id LEFT JOIN employee manager on manager.id = employee.manager_id",
@@ -88,7 +89,7 @@ async function addEmployee() {
     .prompt([
       { name: "first", type: "input", message: "New employee's first name?" },
       { name: "last", type: "input", message: "New employee's last name?" },
-      { name: "role", type: "input", message: "New employee's role?" },
+      { name: "role", type: "input", message: "New employee's role ID?" },
       {
         type: "list",
         name: "manager",
