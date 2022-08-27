@@ -7,6 +7,7 @@ const homeQuestions = [{
       { value: "viewDepartments", name: "View All Departments" },
       { value: "viewRoles", name: "View All Roles" },
       { value: "addEmployee", name: "Add Employee"},
+      { value: "deleteEmployee", name: "Delete Employee"},
       { value: "updateEmployee", name: "Update Employee Role"},
       { value: "addDepartment", name: "Add Department"},
       { value: "addRole", name: "Add Role"},

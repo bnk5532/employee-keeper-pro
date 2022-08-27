@@ -18,6 +18,9 @@ async function startView(questions) {
     case "addEmployee":
       addEmployee();
       break;
+    case "deleteEmployee":
+      deleteEmployee();
+      break;
     case "updateEmployee":
       updateEmployee();
       break;
@@ -80,7 +83,6 @@ async function addEmployee() {
 
     managerList = choices2;
   });
-  console.log(managerList);
 
   inquirer
     .prompt([
@@ -274,6 +276,51 @@ async function addRole() {
     });
 }
 
+async function deleteEmployee() {
+    function getChoices() {
+      return new Promise((res, rej) => {
+        db.query("SELECT * FROM employee", function (err, employees) {
+          res(employees);
+        });
+      });
+    }
+    let employeeList = "";
+    await getChoices().then((results) => {
+      const choices2 = results.map(({ first_name, last_name, id }) => ({
+        name: first_name + " " + last_name,
+        value: id,
+      }));
+  
+      employeeList = choices2;
+    });
+  
+    inquirer
+      .prompt([
+        {
+          type: "list",
+          name: "employee",
+          message: "New employee's manager?",
+          choices: employeeList,
+        },
+      ])
+      .then(function (answers) {
+        console.log(answers);
+        db.query(
+          "DELETE FROM employee WHERE ?",
+          {
+            id: answers.employee,
+          },
+          function (err) {
+            if (err) throw err;
+            console.log(
+              `\nYou successfully deleted this employee from the database!\n`
+            );
+            startView(homeQuestions);
+          }
+        );
+      });
+  }
+  
 startView(homeQuestions);
 
 // const connection = require("./connection");
