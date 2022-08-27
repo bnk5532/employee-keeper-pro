@@ -12,7 +12,7 @@ An easy command line app to track employees and their key stats relating to depa
 * MySQL2
 
 ## Demo Video
-[Click here for a video demo!] (https://watch.screencastify.com/v/BAeAlUdhEE5ilWnaY5TX)
+[Click here for a video demo!](https://watch.screencastify.com/v/BAeAlUdhEE5ilWnaY5TX)
 
 ## Contributors
 Brian King
