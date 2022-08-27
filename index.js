@@ -118,76 +118,79 @@ async function addEmployee() {
 }
 
 async function updateEmployee() {
-  function getChoices() {
-    return new Promise((res, rej) => {
-      db.query("SELECT * FROM employee", function (err, employee) {
-        res(employee);
+    function getChoices() {
+      return new Promise((res, rej) => {
+        db.query("SELECT * FROM employee", function (err, employee) {
+          res(employee);
+        });
       });
+    }
+    let employeeList = "";
+    await getChoices().then((results) => {
+      const choices2 = results.map(({ first_name, last_name, id }) => ({
+        name: first_name + " " + last_name,
+        value: id,
+      }));
+  
+      employeeList = choices2;
     });
-  }
-  let employeeList = "";
-  await getChoices().then((results) => {
-    const choices2 = results.map(({ first_name, last_name, id }) => ({
-      name: first_name + " " + last_name,
-      value: id,
-    }));
-
-    employeeList = choices2;
-  });
-
-  async function getRoles() {
-    return new Promise((res, rej) => {
-      db.query("SELECT * FROM role", function (err, role) {
-        res(role);
+  
+    async function getRoles() {
+      return new Promise((res, rej) => {
+        db.query("SELECT * FROM role", function (err, role) {
+          res(role);
+        });
       });
+    }
+    let roleList = "";
+    await getRoles().then((results) => {
+      const choices3 = results.map(({ title, id }) => ({
+        name: title,
+        value: id,
+      }));
+  
+      roleList = choices3;
     });
-  }
-  let roleList = "";
-  await getRoles().then((results) => {
-    const choices3 = results.map(({ title, id }) => ({
-      name: title,
-      value: id,
-    }));
-
-    roleList = choices3;
-  });
-
-  inquirer
-    .prompt([
-      {
-        name: "selectEmployee",
-        type: "list",
-        message: "Select employee to update role.",
-        choices: employeeList,
-      },
-      {
-        name: "newRole",
-        type: "list",
-        message: "Employees new Role?",
-        choices: roleList,
-      },
+  
+    inquirer
+      .prompt([
+        {
+          name: "selectEmployee",
+          type: "list",
+          message: "Select employee to update role.",
+          choices: employeeList,
+        },
+        {
+            name: "newRole",
+            type: "list",
+            message: "Employees new Role?",
+            choices: roleList,
+        },
     ])
     .then(function (answers) {
-      db.query(
-        "UPDATE employee SET ?",
-        [
-          {
-            name: answers.selectEmployee,
-          },
-          {
-            name: answers.newRole,
-          },
-        ],
-        function (err) {
-          if (err) throw err;
-          console.log(
-            `\nYou successfully updated this employee's role in the database!\n`
-          );
-          startView(homeQuestions);
-        }
-      );
-    });
-}
+          console.log(answers.selectEmployee)
+          console.log(answers.newRole)
+        db.query(
+            "UPDATE employee SET ? WHERE id=?",
+
+            [
+            {
+              id: answers.selectEmployee,
+            },
+            {
+              role_id: answers.newRole,
+            },
+          ],
+          function (err) {
+            if (err) throw err;
+            console.log(
+              `\nYou successfully updated this employee's role in the database!\n`
+            );
+            startView(homeQuestions);
+          }
+        );
+      });
+  }
 
 function addDepartment() {
   inquirer
